@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Post-Graduation Living Cost Planner</title>
+<style>
+/* ===== STYLE TOKENS: swap these to restyle the whole page ===== */
+:root{
+  --font-head:Montserrat,"Segoe UI","Helvetica Neue",Arial,system-ui,sans-serif;
+  --font-body:Montserrat,"Segoe UI","Helvetica Neue",Arial,system-ui,sans-serif;
+  --bg:#ffffff; --card:#ffffff; --ink:#000000; --muted:rgba(0,0,0,.62); --line:rgba(0,0,0,.2);
+  --accent:#007934; --gold:#fcb41f; --tint:rgba(252,180,31,.22);
+  --pill:#fcb41f; --pill-ink:#000000; --btn:#fcb41f; --btn-ink:#000000;
+  --good:#007934; --warn:#fcb41f; --bad:#000000;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;font-weight:400}
+main{max-width:640px;margin:0 auto;padding:24px 16px 150px}
+h1{font-family:var(--font-head);font-weight:700;color:var(--accent);font-size:clamp(26px,6.5vw,36px);line-height:1.15;margin:8px 0 10px}
+h2{font-family:var(--font-head);font-weight:700;color:var(--accent);font-size:20px;margin:0 0 14px}
+.sub{color:var(--muted);margin:0 0 22px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 18px;margin:0 0 16px}
+.step{display:inline-block;background:var(--pill);color:var(--pill-ink);font-weight:700;font-size:13px;border-radius:99px;padding:3px 12px;margin-bottom:8px}
+label.f{display:block;margin:0 0 12px;font-size:15px;color:var(--muted)}
+.in{display:flex;align-items:center;margin-top:4px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);padding:0 12px}
+.in:focus-within{border-color:var(--accent)}
+.in span{color:var(--muted);padding-right:6px}
+.in span.sfx{padding:0 0 0 6px}
+input,select,textarea{font:inherit;color:var(--ink);background:transparent;border:0;outline:0;width:100%;padding:11px 0}
+textarea{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);resize:vertical;min-height:80px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.formula{background:var(--tint);border-radius:10px;padding:10px 12px;font-size:14px;margin:0 0 14px}
+.out{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:10px 0 0;margin-top:6px}
+.out b{font-size:20px;font-weight:700;font-family:var(--font-head)}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.chips label{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;gap:8px;align-items:center;font-size:15px}
+.chips input{width:auto;padding:0;accent-color:var(--accent)}
+.chips label:has(input:checked){border-color:var(--accent);background:var(--tint)}
+.chk{display:flex;gap:10px;align-items:center;margin:6px 0}.chk input{width:20px;padding:0;accent-color:var(--accent)}
+.meter{margin:0 0 18px}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.meter .top strong{font-size:15px}
+.pct{font-family:var(--font-head);font-size:26px;font-weight:700}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--muted);transition:width .25s}
+.badge{font-size:14px;font-weight:700}
+.good .bar i{background:var(--good)}.good .badge{color:var(--ink)}
+.warn .bar i{background:var(--warn)}.warn .badge{color:var(--ink)}
+.bad .bar i{background:var(--bad)}.bad .badge{color:var(--ink)}
+.key{font-size:13px;color:var(--muted)}
+.opt{border-top:1px solid var(--line);padding:12px 0}
+.opt:first-of-type{border-top:0;padding-top:0}
+.opt .row{display:flex;gap:10px;align-items:center;margin-top:6px}
+button{font:inherit;font-weight:700;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);padding:10px 14px;cursor:pointer;white-space:nowrap}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.callout{background:var(--tint);border-radius:12px;padding:16px;font-weight:700;border-left:6px solid var(--pill)}
+.bar-fixed{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.bar-fixed div{max-width:640px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.bar-fixed small{display:block;color:var(--muted);font-size:12px}
+.bar-fixed b{font-size:20px;font-family:var(--font-head)}
+details.ex{border:1.5px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:18px}
+details.ex summary{font-weight:700;cursor:pointer;color:var(--accent)}
+details.ex[open] summary{margin-bottom:10px}
+.note{font-size:14px;color:var(--muted);margin:8px 0}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+.tbl td{padding:7px 0;border-top:1px solid var(--line)}.tbl td:last-child{text-align:right;font-weight:700;white-space:nowrap}
+select{font:inherit;color:var(--ink);background:transparent;border:0;outline:0;width:100%;padding:11px 0}
+select option{background:var(--bg);color:var(--ink)}
+button.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+button{background:var(--btn);color:var(--btn-ink)}
+button.alt{background:transparent;color:var(--ink)}
+select option{background:#fff;color:#000}
+.bar-fixed{background:#000;border-top:0}
+.bar-fixed small{color:var(--gold)}
+.bar-fixed b{color:var(--gold)}
+a{color:var(--accent);font-weight:700}
+</style>
+</head><body>
+<main>
+<h1>Post-Graduation Living Cost Planner</h1>
+<p class="sub">Plug in real numbers to see if your plan after graduation adds up. Tap an example in steps 1 and 2 to see how it works.</p>
+<section><span class="step">Step 1</span><h2>Your monthly income</h2><label class="f">Expected yearly income (before taxes)<div class="in"><span>$</span><input id="annual" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><div class="out"><span>That is per month</span><b id="monthly">$0</b></div><details class="ex"><summary>Example: IBEW Local 906 apprentice</summary>
+ <p class="note">Electrician apprentices are paid a percentage of the Journeyman scale. You start at 50%, then move to 60% after 2,000 work hours and a satisfactory first year of school. Later raises come at 3,500, 5,000, 6,500 and 8,000 hours, but raises aren't automatic. (Source: IBEW 906 apprenticeship FAQ.)</p>
+ <div class="grid"><label class="f">Journeyman scale<div class="in"><span>$</span><input id="x_jw" type="number" inputmode="decimal" min="0" step="any" value="42.75" placeholder="0" ><span class=sfx>/hr</span></div></label><label class="f">Your level<div class="in"><select id="x_pct"><option value="50">Starting (50%)</option><option value="60">After 2,000 hrs (60%)</option></select></div></label></div>
+ <table class="tbl"><tr><td>Hourly pay</td><td id="x_hr">–</td></tr><tr><td>Yearly, full-time, before taxes</td><td id="x_yr">–</td></tr></table>
+ <button type="button" id="x_use1">Use as my income</button>
+ <p class="note">The $42.75 scale comes from a third-party job board, so confirm it with the 906 JATC. Full-time is 2,080 hours a year, but real hours depend on available work.</p></details></section><section><span class="step">Step 2</span><h2>Where you'll live</h2><div class="chips"><label><input type="radio" name="sit" value="Living at home">At home</label><label><input type="radio" name="sit" value="Living with roommates">With roommates</label><label><input type="radio" name="sit" value="Living alone">Living alone</label><label><input type="radio" name="sit" value="Moving to a new city">New city</label></div>
+ <div class="grid"><label class="f">Rent or housing / month<div class="in"><span>$</span><input id="housing" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Utilities / month<div class="in"><span>$</span><input id="utilities" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label></div>
+ <details class="ex" open><summary>Getting to know your utility bill</summary>
+ <p class="note"><b>Heads up!</b> You don't just pay for electricity by the kWh. Your bill is made up of many different charges, like fixed monthly fees, delivery charges, and taxes, and together they make up what you actually pay for home energy. Michigan Saves has a helpful guide on <a href="https://michigansaves.org/news/how-to-read-energy-bills/" target="_blank" rel="noopener">how to read your energy bill</a> that breaks down what each line means.</p>
+ <p class="note">Once you know what's on a bill, use the <a href="https://www.nlr.gov/state-local-tribal/the-residential-energy-cost-estimator" target="_blank" rel="noopener">Residential Energy Cost Estimator</a> from NLR to estimate your own utility costs, then enter that number in the Utilities box above.</p></details></section><section><span class="step">Step 3</span><h2>Getting to work</h2><div class="grid"><label class="f">One-way distance<div class="in"><input id="dist" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ><span class=sfx>miles</span></div></label><label class="f">Days worked per week<div class="in"><input id="days" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Vehicle MPG<div class="in"><input id="mpg" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Gas price<div class="in"><span>$</span><input id="gas" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0.00" ><span class=sfx>/gal</span></div></label></div><div class="formula">Miles per month = distance × 2 × days × 4.3<br>Fuel cost = miles ÷ MPG × gas price</div><div class="out"><span>Fuel cost per month</span><b id="transport">$0</b></div><p class="note">Why 4.3? It's the average number of weeks in a month (52 weeks ÷ 12 months ≈ 4.33, rounded), which turns your weekly commute into a monthly cost.</p></section><section><span class="step">Step 4</span><h2>Other monthly costs</h2><div class="grid"><label class="f">Groceries<div class="in"><span>$</span><input id="groc" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Phone / internet<div class="in"><span>$</span><input id="phone" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Insurance<div class="in"><span>$</span><input id="ins" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label><label class="f">Everything else<div class="in"><span>$</span><input id="other" type="number" inputmode="decimal" min="0" step="any" value="" placeholder="0" ></div></label></div></section><section><span class="step">Step 5</span><h2>Your results</h2><div class="out" style="border:0;margin:0 0 6px"><span>Total monthly cost</span><b id="total">$0</b></div><div class="out" style="margin:0 0 18px"><span>Left over each month</span><b id="left">–</b></div><div class="meter" id="m1"><div class="top"><strong>Income spent on housing</strong><span class="pct">–</span></div><div class="bar"><i></i></div><div class="badge">Fill in the steps above</div><div class="key">(Rent + utilities) ÷ monthly income. Under 30% is affordable. 30–50% is a stretch (cost burdened). Over 50% is too much (severely cost burdened).</div></div><div class="meter" id="m2"><div class="top"><strong>Income spent on essentials</strong><span class="pct">–</span></div><div class="bar"><i></i></div><div class="badge">Fill in the steps above</div><div class="key">(Rent + utilities + commute + groceries, phone, insurance) ÷ monthly income. Under 70% is manageable. 70–90% is tight. Over 90% is high risk.</div></div></section><section><span class="step">Compare</span><h2>Compare up to three options</h2><p class="note" style="margin-top:-6px">Name your current setup, save it, change the numbers above, and save again.</p><div id="opts"></div></section></main>
+<div class="bar-fixed"><div><span><small>Monthly cost</small><b id="sTotal">$0</b></span><span style="text-align:right"><small>Left over</small><b id="sLeft">–</b></span></div></div>
+<script>
+const $=id=>document.getElementById(id),n=id=>parseFloat($(id).value)||0;
+const money=v=>(v<0?"-":"")+"$"+Math.abs(Math.round(v)).toLocaleString("en-US");
+const usd=v=>"$"+(Math.round(v*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+let st={total:0,left:null},saved=[null,null,null],exYear=0;
+function meter(id,pct,lim,L){const el=$(id),has=pct!==null&&isFinite(pct);
+ el.className="meter"+(has?" "+(pct<lim[0]?"good":pct<=lim[1]?"warn":"bad"):"");
+ el.querySelector(".pct").textContent=has?pct.toFixed(0)+"%":"–";
+ el.querySelector(".bar i").style.width=has?Math.min(pct,100)+"%":"0";
+ el.querySelector(".badge").textContent=has?(pct<lim[0]?"✓ "+L[0]:pct<=lim[1]?"! "+L[1]:"✕ "+L[2]):"Fill in the steps above";}
+function calc(){
+ const inc=n("annual")/12,h=n("housing"),u=n("utilities");
+ const miles=n("dist")*2*n("days")*4.3,tr=n("mpg")>0?miles/n("mpg")*n("gas"):0;
+ const basics=n("groc")+n("phone")+n("ins"),total=h+u+tr+basics+n("other");
+ $("monthly").textContent=money(inc);$("transport").textContent=money(tr);
+ $("total").textContent=money(total);$("sTotal").textContent=money(total);
+ const left=inc>0?inc-total:null;
+ $("left").textContent=left===null?"–":money(left);$("sLeft").textContent=left===null?"–":money(left);
+ const p=v=>inc>0?v/inc*100:null;
+ meter("m1",p(h+u),[30,50],["Affordable","A stretch (cost burdened)","Too much (severely cost burdened)"]);
+ meter("m2",p(h+u+tr+basics),[70,90],["Manageable","Tight","High risk"]);
+ st={total,left};}
+function ex1(){const hr=n("x_jw")*n("x_pct")/100;exYear=hr*2080;$("x_hr").textContent=usd(hr);$("x_yr").textContent=money(exYear);}
+function renderOpts(){$("opts").innerHTML=[0,1,2].map(i=>{const o=saved[i];
+ return `<div class="opt"><label class="f" style="margin:0">Option ${i+1}<div class="in"><input type="text" id="oname${i}" placeholder="e.g. Roommates in Marquette" value="${o?o.name.replace(/"/g,"&quot;"):""}"></div></label><div class="row"><span style="flex:1">${o?`<b>${money(o.total)}</b> / month`+(o.left!==null?` · ${money(o.left)} left`:""):"<span class='key'>Not saved yet</span>"}</span><button type="button" data-i="${i}">Save current</button></div></div>`}).join("");
+ document.querySelectorAll("#opts button").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
+  const name=$("oname"+i).value.trim()||(document.querySelector("input[name=sit]:checked")||{}).value||"Option "+(i+1);
+  saved[i]={name,total:st.total,left:st.left};renderOpts();});}
+const set=(id,v)=>{$(id).value=v;$(id).dispatchEvent(new Event("input",{bubbles:true}))};
+document.querySelectorAll("input[type=number]").forEach(i=>i.addEventListener("input",calc));
+["x_jw","x_pct"].forEach(i=>$(i).addEventListener("input",ex1));
+$("x_use1").onclick=()=>set("annual",Math.round(exYear));
+renderOpts();ex1();calc();
+</script></body></html>
